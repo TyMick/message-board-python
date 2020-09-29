@@ -41,7 +41,7 @@ $(function() {
         },
         error: function() {
           window.location.href =
-            "https://ty-messageboard.glitch.me/b/" + $("#threadBoard").val();
+            "http://127.0.0.1:5000/b/" + $("#threadBoard").val();
         }
       });
     } else {
@@ -133,7 +133,7 @@ $(function() {
         },
         error: function() {
           window.location.href =
-            "https://ty-messageboard.glitch.me/b/" +
+            "http://127.0.0.1:5000/b/" +
             $("#replyBoard").val() +
             "/" +
             $("#postReplyThreadId").val();
