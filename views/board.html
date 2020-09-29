@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- prettier-ignore -->
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link id="favicon" rel="icon" href="https://tymick.me/favicon.ico" type="image/x-icon">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.0/build/styles/default.min.css" />
+
+    <title>Anonymous message board – Ty Mick</title>
+  </head>
+
+  <body style="background-color: #dee2e6;">
+    <div class="container my-5">
+      <h2 class="mb-4">
+        <strong>GET</strong>
+        <samp>/api<wbr />/threads<wbr />/<span id="boardName"></span></samp>:
+      </h2>
+
+      <div id="outputCard" class="card">
+        <div class="spinner-grow m-3" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Glitch button -->
+    <div
+      class="glitchButton"
+      style="position:absolute;top:20px;right:20px;"
+    ></div>
+    <script src="https://button.glitch.me/button.js"></script>
+
+    <!-- prettier-ignore -->
+    <span>
+      <!-- jQuery -->
+      <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <!-- Bootstrap -->
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>      
+      <!-- highlight.js -->
+      <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.0/build/highlight.min.js"></script>
+    </span>
+
+    <!-- Page scripts -->
+    <script>
+      $(function() {
+        var board = window.location.pathname.slice(3);
+        $("#boardName").text(board);
+        $.ajax({
+          url: "/api/threads/" + board,
+          type: "get",
+          success: function(data) {
+            $("#outputCard").html(
+              "<pre id='apiOutput' class='hljs bg-white mb-0'>" +
+                JSON.stringify(data, null, 2) +
+                "</pre>"
+            );
+            hljs.highlightBlock(document.getElementById("apiOutput"));
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
