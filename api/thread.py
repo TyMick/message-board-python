@@ -38,12 +38,12 @@ def get_recent_threads(board_id):
         db = get_db()
         c = db.cursor()
         c.execute(
-            """
+            r"""
             SELECT
                 _id,
                 text,
-                datetime(created_on, "unixepoch") AS created_on,
-                datetime(bumped_on, "unixepoch") AS bumped_on
+                strftime("%Y-%m-%dT%H:%M:%fZ", created_on, "unixepoch") AS created_on,
+                strftime("%Y-%m-%dT%H:%M:%fZ", bumped_on, "unixepoch") AS bumped_on
             FROM thread
             WHERE board_id == ?
             ORDER BY bumped_on DESC
