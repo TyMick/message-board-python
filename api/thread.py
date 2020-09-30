@@ -78,4 +78,31 @@ def report_thread(board_id):
 
 
 def delete_thread(board_id):
-    pass
+    try:
+        db = get_db()
+        c = db.cursor()
+        thread_id = request.form["thread_id"]
+        delete_password = request.form["delete_password"]
+        c.execute(
+            """
+            DELETE FROM thread WHERE board_id == ? AND _id == ? AND delete_password == ?
+            """,
+            (board_id, thread_id, delete_password),
+        )
+        db.commit()
+
+        c.execute("SELECT changes() AS rows_deleted")
+        if c.fetchone()["rows_deleted"] > 0:
+            return "Success"
+        else:
+            c.execute(
+                "SELECT count(*) AS count FROM thread WHERE board_id == ? AND _id == ?",
+                (board_id, thread_id),
+            )
+            if c.fetchone()["count"] == 0:
+                return "No such thread _id"
+            else:
+                return "Incorrect password"
+
+    except:
+        return {"error": "Database error"}
