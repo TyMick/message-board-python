@@ -41,7 +41,8 @@ $(function() {
         },
         error: function() {
           window.location.href =
-            "http://127.0.0.1:5000/b/" + $("#threadBoard").val();
+            "https://message-board-python.tymick.me/b/" +
+            $("#threadBoard").val();
         }
       });
     } else {
@@ -133,7 +134,7 @@ $(function() {
         },
         error: function() {
           window.location.href =
-            "http://127.0.0.1:5000/b/" +
+            "https://message-board-python.tymick.me/b/" +
             $("#replyBoard").val() +
             "/" +
             $("#postReplyThreadId").val();
