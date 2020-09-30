@@ -119,4 +119,35 @@ def report_reply(board_id):
 
 
 def delete_reply(board_id):
-    pass
+    try:
+        db = get_db()
+        c = db.cursor()
+        thread_id = request.form["thread_id"]
+        reply_id = request.form["reply_id"]
+        delete_password = request.form["delete_password"]
+        c.execute(
+            """
+            UPDATE reply
+            SET text = "[deleted]"
+            WHERE board_id == ? AND thread_id == ? AND _id == ? AND delete_password == ?
+            """,
+            (board_id, thread_id, reply_id, delete_password),
+        )
+        db.commit()
+
+        c.execute("SELECT changes() AS rows_updated")
+        if c.fetchone()["rows_updated"] > 0:
+            return "Success"
+        else:
+            c.execute("SELECT _id FROM thread WHERE _id == ?", (thread_id,))
+            if c.fetchone() is None:
+                return "No such thread _id"
+            else:
+                c.execute("SELECT _id FROM reply WHERE _id == ?", (reply_id,))
+                if c.fetchone() is None:
+                    return "No such reply _id"
+                else:
+                    return "Incorrect password"
+
+    except:
+        return {"error": "Database error"}
