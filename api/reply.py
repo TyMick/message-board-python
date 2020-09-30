@@ -89,7 +89,33 @@ def get_thread_and_replies(board_id):
 
 
 def report_reply(board_id):
-    pass
+    try:
+        db = get_db()
+        c = db.cursor()
+        thread_id = request.form["thread_id"]
+        reply_id = request.form["reply_id"]
+        c.execute(
+            """
+            UPDATE reply
+            SET reported = 1
+            WHERE board_id == ? AND thread_id == ? AND _id == ?
+            """,
+            (board_id, thread_id, reply_id),
+        )
+        db.commit()
+
+        c.execute("SELECT changes() AS rows_updated")
+        if c.fetchone()["rows_updated"] > 0:
+            return "Success"
+        else:
+            c.execute("SELECT _id FROM thread WHERE _id == ?", (thread_id,))
+            if c.fetchone() is None:
+                return "No such thread _id"
+            else:
+                return "No such reply _id"
+
+    except:
+        return {"error": "Database error"}
 
 
 def delete_reply(board_id):
