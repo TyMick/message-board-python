@@ -58,7 +58,23 @@ def get_recent_threads(board_id):
 
 
 def report_thread(board_id):
-    pass
+    try:
+        db = get_db()
+        c = db.cursor()
+        c.execute(
+            "UPDATE thread SET reported = 1 WHERE board_id == ? AND _id == ?",
+            (board_id, request.form["thread_id"]),
+        )
+        db.commit()
+
+        c.execute("SELECT changes() AS rows_updated")
+        if c.fetchone()["rows_updated"] > 0:
+            return "Success"
+        else:
+            return "No such thread _id"
+
+    except:
+        return {"error": "Database error"}
 
 
 def delete_thread(board_id):
