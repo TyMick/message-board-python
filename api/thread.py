@@ -38,7 +38,7 @@ def get_recent_threads(board_id):
         db = get_db()
         c = db.cursor()
         c.execute(
-            r"""
+            """
             SELECT
                 _id,
                 text,

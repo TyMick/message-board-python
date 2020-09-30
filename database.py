@@ -20,6 +20,7 @@ def get_db():
     if db is None:
         db = g._database = sqlite3.connect(DATABASE)
         db.row_factory = dict_factory
+    db.execute("PRAGMA foreign_keys = ON")
     return db
 
 
@@ -27,20 +28,35 @@ def init_db():
     db = get_db()
     c = db.cursor()
 
-    c.execute(
+    c.executescript(
         """
         CREATE TABLE IF NOT EXISTS thread(
-            _id TEXT PRIMARY KEY,
             board_id TEXT NOT NULL,
+            _id TEXT PRIMARY KEY,
             text TEXT NOT NULL,
             created_on DATETIME NOT NULL,
             bumped_on DATETIME NOT NULL,
             reported BOOLEAN NOT NULL,
             delete_password TEXT NOT NULL
-        ) WITHOUT ROWID
+        ) WITHOUT ROWID;
+
+        CREATE UNIQUE INDEX IF NOT EXISTS thread_idx ON thread(board_id, _id);
+
+        CREATE TABLE IF NOT EXISTS reply(
+            _id TEXT PRIMARY KEY,
+            text TEXT NOT NULL,
+            created_on DATETIME NOT NULL,
+            delete_password TEXT NOT NULL,
+            reported BOOLEAN NOT NULL,
+            board_id TEXT,
+            thread_id TEXT,
+            FOREIGN KEY(thread_id, board_id)
+                REFERENCES thread(_id, board_id)
+                ON DELETE CASCADE
+        ) WITHOUT ROWID;
         """
     )
-    threads = c.fetchall()
+
     # Create indices
 
     db.commit()
