@@ -76,6 +76,7 @@ def get_thread_and_replies(board_id):
                 strftime("%Y-%m-%dT%H:%M:%fZ", created_on, "unixepoch") AS created_on
             FROM reply
             WHERE board_id == ? AND thread_id == ?
+            ORDER BY created_on ASC
             """,
             (board_id, thread_id),
         )

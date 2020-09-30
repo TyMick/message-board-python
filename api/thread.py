@@ -51,7 +51,29 @@ def get_recent_threads(board_id):
             """,
             (board_id,),
         )
-        return jsonify(c.fetchall())
+        threads = c.fetchall()
+
+        for thread in threads:
+            c.execute(
+                """
+                WITH recent_replies AS (
+                    SELECT
+                        _id,
+                        text,
+                        strftime("%Y-%m-%dT%H:%M:%fZ", created_on, "unixepoch")
+                            AS created_on
+                    FROM reply
+                    WHERE board_id == ? AND thread_id == ?
+                    ORDER BY created_on DESC
+                    LIMIT 3
+                )
+                SELECT * FROM recent_replies ORDER BY created_on ASC
+                """,
+                (board_id, thread["_id"]),
+            )
+            thread["replies"] = c.fetchall()
+
+        return jsonify(threads)
 
     except:
         return {"error": "Database error"}
