@@ -27,7 +27,6 @@ def get_db():
 def init_db():
     db = get_db()
     c = db.cursor()
-
     c.executescript(
         """
         CREATE TABLE IF NOT EXISTS thread(
@@ -41,6 +40,7 @@ def init_db():
         ) WITHOUT ROWID;
 
         CREATE UNIQUE INDEX IF NOT EXISTS thread_idx ON thread(board_id, _id);
+        CREATE INDEX IF NOT EXISTS thread_bump ON thread(board_id, _id, bumped_on);
 
         CREATE TABLE IF NOT EXISTS reply(
             _id TEXT PRIMARY KEY,
@@ -54,9 +54,10 @@ def init_db():
                 REFERENCES thread(_id, board_id)
                 ON DELETE CASCADE
         ) WITHOUT ROWID;
+
+        CREATE UNIQUE INDEX IF NOT EXISTS reply_idx ON reply(board_id, thread_id, _id);
+        CREATE INDEX IF NOT EXISTS reply_created
+        ON reply(board_id, thread_id, _id, created_on);
         """
     )
-
-    # Create indices
-
     db.commit()
