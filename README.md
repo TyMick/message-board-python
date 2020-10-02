@@ -2,7 +2,7 @@
 
 [![Run on Repl.it](https://repl.it/badge/github/tywmick/message-board-python)](https://repl.it/github/tywmick/message-board-python)
 
-This is a Python port of my [Node.js message board](https://ty-messageboard.glitch.me/), built with [Flask](https://flask.palletsprojects.com/en/1.1.x/) and [SQLite](https://sqlite.org/index.html). The front end API tests on the home page also uses [Bootstrap](https://getbootstrap.com/), [jQuery](https://jquery.com/), and [highlight.js](https://highlightjs.org/). The API fulfills the following user stories:
+This is a Python port of my [Node.js message board](https://ty-messageboard.glitch.me/), built with [Flask](https://flask.palletsprojects.com/en/1.1.x/) and [SQLite](https://sqlite.org/index.html). The front end API tests on the home page also use [Bootstrap](https://getbootstrap.com/), [jQuery](https://jquery.com/), and [highlight.js](https://highlightjs.org/). The API fulfills the following user stories:
 
 1. I can **POST** a thread to a specific message board by passing form data `text` and `delete_password` to `/api/threads/{board}`. (Recomend `res.redirect` to board page `/b/{board}`) Saved will be `_id`, `text`, `created_on` (date&time), `bumped_on` (date&time, starts same as created_on), `reported` (boolean), `delete_password`, & `replies` (array).
 2. I can **POST** a reply to a thead on a specific board by passing form data `text`, `delete_password`, & `thread_id` to `/api/replies/{board}` and it will also update the `bumped_on` date to the comment's date. (Recomend `res.redirect` to thread page `/b/{board}/{thread_id}`) In the thread's `replies` array will be saved `_id`, `text`, `created_on`, `delete_password`, & `reported`.
